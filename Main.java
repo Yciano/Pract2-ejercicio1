@@ -6,8 +6,8 @@ public class Main {
 
     /*
     Funcion: Desplazar
-    Objetico: Desplazar los elementos de una arreglo partido entre dos, 1 desplazamiento intercalado entre las mitades
-    Argumentos: int (numero de desplazamientos, Cadena como arreglo de char's, int el tamanyo)
+    Objetivo: Desplazar los elementos de un arreglo partido entre dos, 1 desplazamiento intercalado entre las mitades
+    Argumentos: int (numero de desplazamientos), Cadena como arreglo de char's, int el tamanyo
     Retorna: Cadena char original pero ya desplazada
     */
     public static char[] Desplazar(int desplazo, char[] s, int tamanyo) {
@@ -16,33 +16,64 @@ public class Main {
         int primera = (desplazo + 1) / 2;
         int segunda = desplazo / 2;
 
-        if (primera > 0) { // Verifica si hay que rotar la primera mitad (si el desplazamiento es mayor que cero)
-            char[] buffer = new char[mitad]; // Crea un array temporal del tamaño de la mitad para almacenar los caracteres rotados
-            //Valido porque solo sirve para almacenar, no es un nuevo arreglo que se devolvera
+        // Rotar primera mitad
+        if (primera > 0 && mitad > 0) {
+            if (primera != 0) {
+                int ciclos = gcd(mitad, primera); // Calcula cuántos ciclos independientes hay en la rotación
 
-            for (int bloque = 1; bloque <= mitad; bloque *= 2) { // Bucle exterior que multiplica bloque por 2, aunque no afecta la lógica interna
-                for (int i = 0; i < mitad; i++) { // Recorre cada elemento de la primera mitad del array original
-                    buffer[(i + primera) % mitad] = s[i]; // Coloca cada carácter en su nueva posición rotada usando módulo para crear el efecto circular
+                // Itera sobre cada ciclo independiente
+                for (int inicio = 0; inicio < ciclos; inicio++) {
+                    char temp = s[inicio]; // Guarda el primer elemento del ciclo
+                    int actual = inicio;
+
+                    // Sigue el ciclo moviendo elementos a su posición final
+                    while (true) {
+                        int siguiente = (actual + primera) % mitad; // Calcula dónde debe ir el elemento actual
+                        if (siguiente == inicio) break; // Si volvemos al inicio, el ciclo está completo
+
+                        s[actual] = s[siguiente]; // Mueve el elemento siguiente a la posición actual
+                        actual = siguiente; // Avanza al siguiente elemento del ciclo
+                    }
+                    s[actual] = temp; // Coloca el elemento guardado en su posición final
                 }
-            }
-            for (int i = 0; i < mitad; i++) { // Recorre el buffer completo
-                s[i] = buffer[i]; // Copia cada carácter del buffer de vuelta a la primera mitad del array original
             }
         }
 
-        if (segunda > 0) { //Lo mismo que el  bloque de codigo de la primera con la segunda mitad
-            char[] buffer = new char[mitad];
-            for (int bloque = 1; bloque <= mitad; bloque *= 2) {
-                for (int i = 0; i < mitad; i++) {
-                    buffer[(i + segunda) % mitad] = s[mitad + i];
+        // Rotar segunda mitad (mismo proceso pero desplazado por 'mitad' posiciones)
+        if (segunda > 0 && mitad > 0) {
+            if (segunda != 0) {
+                int ciclos = gcd(mitad, segunda);
+
+                for (int inicio = 0; inicio < ciclos; inicio++) {
+                    char temp = s[mitad + inicio]; // Trabaja con la segunda mitad del arreglo
+                    int actual = inicio;
+
+                    while (true) {
+                        int siguiente = (actual + segunda) % mitad;
+                        if (siguiente == inicio) break;
+
+                        s[mitad + actual] = s[mitad + siguiente]; // Los índices tienen offset de 'mitad'
+                        actual = siguiente;
+                    }
+                    s[mitad + actual] = temp;
                 }
-            }
-            for (int i = 0; i < mitad; i++) {
-                s[mitad + i] = buffer[i];
             }
         }
 
-        return s; // Retorna el array modificado con ambas mitades rotadas
+        return s;
+    }
+
+    /*
+    Funcion auxiliar: gcd (Greatest Common Divisor)
+    Calcula el máximo común divisor usando el algoritmo de Euclides
+    */
+    private static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
     }
 
     /*
@@ -71,7 +102,7 @@ public class Main {
     Retorna: Lista de estudiantes ordenada por indice academico
     */
     public static List<Estudiante> ordenarMergeSort(List<Estudiante> listaSinOrdenar, boolean ascendente) {
-        ArrayList<Estudiante> copia = new ArrayList<>(listaSinOrdenar); // Crea una copia para no modificar la original
+        ArrayList<Estudiante> copia = new ArrayList<>(listaSinOrdenar);
         mergeSort(copia, 0, copia.size() - 1, ascendente);
         return copia;
     }
@@ -84,10 +115,10 @@ public class Main {
     */
     private static void mergeSort(ArrayList<Estudiante> lista, int inicio, int fin, boolean ascendente) {
         if (inicio < fin) {
-            int medio = (inicio + fin) / 2; // Encuentra el punto medio
-            mergeSort(lista, inicio, medio, ascendente); // Ordena la primera mitad recursivamente
-            mergeSort(lista, medio + 1, fin, ascendente); // Ordena la segunda mitad recursivamente
-            merge(lista, inicio, medio, fin, ascendente); // Combina ambas mitades ordenadas
+            int medio = (inicio + fin) / 2;
+            mergeSort(lista, inicio, medio, ascendente);
+            mergeSort(lista, medio + 1, fin, ascendente);
+            merge(lista, inicio, medio, fin, ascendente);
         }
     }
 
@@ -100,18 +131,18 @@ public class Main {
     private static void merge(ArrayList<Estudiante> lista, int inicio, int medio, int fin, boolean ascendente) {
         int n1 = medio - inicio + 1;
         int n2 = fin - medio;
-        Estudiante[] izquierda = new Estudiante[n1]; // Array temporal para la sublista izquierda
-        Estudiante[] derecha = new Estudiante[n2]; // Array temporal para la sublista derecha
+        Estudiante[] izquierda = new Estudiante[n1];
+        Estudiante[] derecha = new Estudiante[n2];
 
-        for (int i = 0; i < n1; i++) { // Copia elementos a la sublista izquierda
+        for (int i = 0; i < n1; i++) {
             izquierda[i] = lista.get(inicio + i);
         }
-        for (int j = 0; j < n2; j++) { // Copia elementos a la sublista derecha
+        for (int j = 0; j < n2; j++) {
             derecha[j] = lista.get(medio + 1 + j);
         }
 
         int i = 0, j = 0, k = inicio;
-        while (i < n1 && j < n2) { // Combina las sublistas comparando elementos según el orden
+        while (i < n1 && j < n2) {
             if ((ascendente && izquierda[i].indiceAcademico <= derecha[j].indiceAcademico) ||
                     (!ascendente && izquierda[i].indiceAcademico >= derecha[j].indiceAcademico)) {
                 lista.set(k, izquierda[i]);
@@ -123,12 +154,12 @@ public class Main {
             k++;
         }
 
-        while (i < n1) { // Copia los elementos restantes de la sublista izquierda
+        while (i < n1) {
             lista.set(k, izquierda[i]);
             i++;
             k++;
         }
-        while (j < n2) { // Copia los elementos restantes de la sublista derecha
+        while (j < n2) {
             lista.set(k, derecha[j]);
             j++;
             k++;
@@ -156,7 +187,7 @@ public class Main {
 
             System.out.print("\nCadena desplazada: ");
             for (int i = 0; i < cad.length; i++) {
-                System.out.print(cad[i]); // Imprime cada carácter del array rotado
+                System.out.print(cad[i]);
             }
 
             double nlogn = tamanyo * (Math.log(tamanyo) / Math.log(2));
