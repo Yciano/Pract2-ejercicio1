@@ -19,7 +19,7 @@ public class Main {
         // Rotar primera mitad
         if (primera > 0 && mitad > 0) {
             if (primera != 0) {
-                int ciclos = gcd(mitad, primera); // Calcula cuántos ciclos independientes hay en la rotación
+                int ciclos = mcd(mitad, primera); // Calcula cuántos ciclos independientes hay en la rotación
 
                 // Itera sobre cada ciclo independiente
                 for (int inicio = 0; inicio < ciclos; inicio++) {
@@ -42,7 +42,7 @@ public class Main {
         // Rotar segunda mitad (mismo proceso pero desplazado por 'mitad' posiciones)
         if (segunda > 0 && mitad > 0) {
             if (segunda != 0) {
-                int ciclos = gcd(mitad, segunda);
+                int ciclos = mcd(mitad, segunda);
 
                 for (int inicio = 0; inicio < ciclos; inicio++) {
                     char temp = s[mitad + inicio]; // Trabaja con la segunda mitad del arreglo
@@ -52,7 +52,7 @@ public class Main {
                         int siguiente = (actual + segunda) % mitad;
                         if (siguiente == inicio) break;
 
-                        s[mitad + actual] = s[mitad + siguiente]; // Los índices tienen offset de 'mitad'
+                        s[mitad + actual] = s[mitad + siguiente]; 
                         actual = siguiente;
                     }
                     s[mitad + actual] = temp;
@@ -64,10 +64,10 @@ public class Main {
     }
 
     /*
-    Funcion auxiliar: gcd (Greatest Common Divisor)
+    Funcion auxiliar: mcd (Maximo comun divisor)
     Calcula el máximo común divisor usando el algoritmo de Euclides
     */
-    private static int gcd(int a, int b) {
+    private static int mcd(int a, int b) {
         while (b != 0) {
             int temp = b;
             b = a % b;
