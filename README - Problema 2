@@ -1,0 +1,10 @@
+Este programa en Java permite gestionar listas de estudiantes generando datos aleatorios y ordenándolos de manera eficiente usando el algoritmo Merge Sort.
+La función generarEstudiantes(int n) crea n estudiantes, asignando a cada uno un ID único, un nombre en formato "Estudiante #i" y un índice académico aleatorio entre 0 y 4. 
+Esto facilita la simulación de datos para pruebas o proyectos académicos.
+
+Para ordenar la lista de estudiantes, se utiliza la función ordenarMergeSort(List<Estudiante> lista, boolean ascendente). 
+Esta función recibe la lista de estudiantes y un parámetro booleano que indica si el orden debe ser ascendente (true) o descendente (false).
+Internamente, el algoritmo divide la lista en sublistas más pequeñas mediante la función mergeSort y luego combina estas sublistas ordenadas usando la función merge.
+
+La implementación asegura que la lista original no se modifique, ya que se trabaja sobre una copia de la lista.
+Además, Merge Sort garantiza un tiempo de ejecución eficiente de O(n log n) en el peor caso, lo que lo hace adecuado para manejar grandes cantidades de datos.
